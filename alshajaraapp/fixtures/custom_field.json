@@ -1,0 +1,13 @@
+[
+  {
+    "doctype": "Custom Field",
+    "name": "Opportunity-project",
+    "dt": "Opportunity",
+    "fieldname": "project",
+    "fieldtype": "Link",
+    "label": "Project",
+    "options": "Project",
+    "insert_after": "opportunity_owner",
+    "module": "Rosewoodapp"
+  }
+]

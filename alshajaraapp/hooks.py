@@ -5,6 +5,13 @@ app_description = "Alshajara App"
 app_email = "chirag.joshi@vigisolvo.com"
 app_license = "mit"
 
+
+fixtures = [
+    {"dt": "Custom Field", "filters": [["module", "=", "Alshajaraapp"]]},
+    {"dt": "Property Setter", "filters": [["module", "=", "Alshajaraapp"]]},
+]
+
+
 # Apps
 # ------------------
 
