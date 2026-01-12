@@ -11,6 +11,11 @@ fixtures = [
     {"dt": "Property Setter", "filters": [["module", "=", "Alshajaraapp"]]},
 ]
 
+doctype_js = {
+    "Quotation": "public/js/quotation.js",
+    "Opportunity": "public/js/opportunity.js"
+}
+
 
 # Apps
 # ------------------

@@ -8,6 +8,74 @@
     "label": "Project",
     "options": "Project",
     "insert_after": "opportunity_owner",
-    "module": "Rosewoodapp"
+    "reqd": 1
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-comments_tab",
+    "dt": "Quotation",
+    "fieldname": "comments_tab",
+    "fieldtype": "Tab Break",
+    "label": "Comments",
+    "insert_after": "terms"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-notes_html",
+    "dt": "Quotation",
+    "fieldname": "notes_html",
+    "fieldtype": "HTML",
+    "label": "Notes HTML",
+    "insert_after": "comments_tab"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-notes",
+    "dt": "Quotation",
+    "fieldname": "notes",
+    "fieldtype": "Table",
+    "label": "Notes",
+    "options": "CRM Note",
+    "insert_after": "notes_html",
+    "hidden": 0
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-project",
+    "dt": "Quotation",
+    "fieldname": "project",
+    "fieldtype": "Link",
+    "label": "Project",
+    "options": "Project",
+    "insert_after": "party_name"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-last_communication_note",
+    "dt": "Quotation",
+    "fieldname": "last_communication_note",
+    "fieldtype": "Data",
+    "label": "Last Note",
+    "insert_after": "notes",
+    "read_only": 1
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-last_communication_date",
+    "dt": "Quotation",
+    "fieldname": "last_communication_date",
+    "fieldtype": "Datetime",
+    "label": "Last Date",
+    "insert_after": "last_communication_note",
+    "read_only": 1
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-next_follow_up_date",
+    "dt": "Quotation",
+    "fieldname": "next_follow_up_date",
+    "fieldtype": "Date",
+    "label": "Next Follow-up Date",
+    "insert_after": "last_communication_date"
   }
 ]
