@@ -1,0 +1,46 @@
+[
+  {
+    "doctype": "Property Setter",
+    "name": "Lead-qualification_tab-hidden",
+    "doctype_or_field": "DocField",
+    "doc_type": "Lead",
+    "field_name": "qualification_tab",
+    "property": "hidden",
+    "property_type": "Check",
+    "value": "1",
+    "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Property Setter",
+    "name": "Lead-other_info_tab-hidden",
+    "doctype_or_field": "DocField",
+    "doc_type": "Lead",
+    "field_name": "other_info_tab",
+    "property": "hidden",
+    "property_type": "Check",
+    "value": "1",
+    "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Property Setter",
+    "name": "Lead-organization_section-hidden",
+    "doctype_or_field": "DocField",
+    "doc_type": "Lead",
+    "field_name": "organization_section",
+    "property": "hidden",
+    "property_type": "Check",
+    "value": "1",
+    "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Property Setter",
+    "name": "Sales Order-advance_paid-label",
+    "doctype_or_field": "DocField",
+    "doc_type": "Sales Order",
+    "field_name": "advance_paid",
+    "property": "label",
+    "property_type": "Data",
+    "value": "Advance Received",
+    "module": "Alshajaraapp"
+  }
+]

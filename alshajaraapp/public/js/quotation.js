@@ -38,3 +38,21 @@ frappe.ui.form.on("Quotation", {
 		d.show();
 	},
 });
+
+frappe.ui.form.on("Quotation", {
+	refresh(frm) {
+		if (frm.doc.docstatus === 1 && frm.doc._sent === "Not Sent") {
+			frm.add_custom_button(__("Mark as Sent"), function () {
+				frappe.call({
+					method: "alshajaraapp.api.quotation.mark_quotation_sent",
+					args: {
+						name: frm.doc.name,
+					},
+					callback: function () {
+						frm.reload_doc();
+					},
+				});
+			});
+		}
+	},
+});

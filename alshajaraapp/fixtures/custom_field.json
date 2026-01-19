@@ -77,5 +77,45 @@
     "fieldtype": "Date",
     "label": "Next Follow-up Date",
     "insert_after": "last_communication_date"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Opportunity-last_communicated_note",
+    "dt": "Opportunity",
+    "fieldname": "last_communicated_note",
+    "fieldtype": "Data",
+    "label": "Last Note",
+    "read_only": 1,
+    "insert_after": "notes"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Opportunity-last_communicated_date",
+    "dt": "Opportunity",
+    "fieldname": "last_communicated_date",
+    "fieldtype": "Datetime",
+    "label": "Last Date",
+    "read_only": 1,
+    "insert_after": "last_communicated_note"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Opportunity-next_follow_up_date",
+    "dt": "Opportunity",
+    "fieldname": "next_follow_up_date",
+    "fieldtype": "Date",
+    "label": "Next Follow-up Date",
+    "insert_after": "last_communicated_date"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-_sent",
+    "dt": "Quotation",
+    "fieldname": "_sent",
+    "fieldtype": "Select",
+    "label": "Sent Flag",
+    "options": "Not Sent\nSent",
+    "default": "Not Sent",
+    "insert_after": "status"
   }
 ]
