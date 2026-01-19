@@ -16,6 +16,13 @@ doctype_js = {
     "Opportunity": "public/js/opportunity.js"
 }
 
+doc_events = {
+    "Quotation": {
+        "autoname": "alshajaraapp.api.quotation.set_custom_quotation_name",
+        "after_insert": "alshajaraapp.api.quotation.generate_quotation_barcode"
+    }
+}
+
 
 # Apps
 # ------------------

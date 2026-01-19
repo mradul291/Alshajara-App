@@ -77,3 +77,103 @@ def mark_quotation_sent(name):
     )
 
     frappe.db.commit()
+
+import frappe
+from frappe.utils import getdate
+
+def set_custom_quotation_name(doc, method):
+    # Safety: do not override if already named
+    if doc.name and not doc.name.startswith("New"):
+        return
+
+    # 1. Company Code (STATIC or derive if needed)
+    company_code = "3S"
+
+    # 2. Date parts from transaction_date
+    if not doc.transaction_date:
+        frappe.throw("Transaction Date is required to generate Quotation number")
+
+    date = getdate(doc.transaction_date)
+    year = date.strftime("%y")
+    month = date.strftime("%m")
+    day = date.strftime("%d")
+
+    # 3. Brand from items table (first item)
+    if not doc.items:
+        frappe.throw("At least one item is required to generate Quotation number")
+
+    brand_value = doc.items[0].brand
+    if not brand_value:
+        frappe.throw("Brand is required in Quotation Item")
+
+    brand_code = brand_value.strip()[0].upper()
+
+    # 4. Prefix for running series
+    prefix = f"{company_code}{year}{brand_code}{month}{day}"
+
+    # 5. Get last running number
+    last_name = frappe.db.sql(
+        """
+        SELECT name
+        FROM `tabQuotation`
+        WHERE name LIKE %s
+        ORDER BY name DESC
+        LIMIT 1
+        """,
+        (prefix + "%",),
+        as_dict=True
+    )
+
+    if last_name:
+        last_series = int(last_name[0].name[-2:])
+        new_series = last_series + 1
+    else:
+        new_series = 1
+
+    series_str = str(new_series).zfill(2)
+
+    # 6. Final name
+    doc.name = f"{prefix}{series_str}"
+
+
+import frappe
+import io
+from frappe.utils.file_manager import save_file
+from barcode import Code128
+from barcode.writer import ImageWriter
+
+def generate_quotation_barcode(doc, method):
+    """
+    Generates barcode image using Quotation name
+    and attaches it to the Quotation document
+    """
+
+    # Do not regenerate if already exists
+    if doc.barcode:
+        return
+
+    barcode_value = doc.name  # 🔑 Use generated quotation name
+
+    # Generate barcode image in memory
+    buffer = io.BytesIO()
+    Code128(barcode_value, writer=ImageWriter()).write(buffer)
+
+    filename = f"{barcode_value}.png"
+
+    # Save file in Frappe
+    file_doc = save_file(
+        fname=filename,
+        content=buffer.getvalue(),
+        dt="Quotation",
+        dn=doc.name,
+        folder="Home/Attachments",
+        is_private=0
+    )
+
+    # Update quotation with barcode file
+    frappe.db.set_value(
+        "Quotation",
+        doc.name,
+        "barcode",
+        file_doc.file_url
+    )

@@ -117,5 +117,27 @@
     "options": "Not Sent\nSent",
     "default": "Not Sent",
     "insert_after": "status"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-barcode",
+    "dt": "Quotation",
+    "fieldname": "barcode",
+    "fieldtype": "Attach Image",
+    "label": "Quotation Barcode",
+    "read_only": 1,
+    "hidden": 1,
+    "insert_after": "order_type"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-barcode_preview",
+    "dt": "Quotation",
+    "fieldname": "barcode_preview",
+    "fieldtype": "Image",
+    "label": "Barcode Preview",
+    "options": "barcode",
+    "read_only": 1,
+    "insert_after": "barcode"
   }
 ]
