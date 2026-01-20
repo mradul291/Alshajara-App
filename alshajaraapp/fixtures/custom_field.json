@@ -139,5 +139,37 @@
     "options": "barcode",
     "read_only": 1,
     "insert_after": "barcode"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation Item-total_profit_percentage",
+    "dt": "Quotation Item",
+    "fieldname": "total_profit_percentage",
+    "fieldtype": "Percent",
+    "label": "Total Profit %",
+    "read_only": 1,
+    "precision": 2,
+    "insert_after": "margin_rate_or_amount"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-total_profit_amount",
+    "dt": "Quotation",
+    "fieldname": "total_profit_amount",
+    "fieldtype": "Currency",
+    "label": "Total Profit Amount",
+    "read_only": 1,
+    "insert_after": "total_qty"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-total_profit_percentage",
+    "dt": "Quotation",
+    "fieldname": "total_profit_percentage",
+    "fieldtype": "Percent",
+    "label": "Total Profit %",
+    "read_only": 1,
+    "precision": 2,
+    "insert_after": "total_profit_amount"
   }
 ]

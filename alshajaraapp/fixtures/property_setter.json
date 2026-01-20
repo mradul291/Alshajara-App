@@ -42,5 +42,16 @@
     "property_type": "Data",
     "value": "Advance Received",
     "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Property Setter",
+    "name": "Lead-company_name-label",
+    "doctype_or_field": "DocField",
+    "doc_type": "Lead",
+    "field_name": "company_name",
+    "property": "label",
+    "property_type": "Data",
+    "value": "Company Name",
+    "module": "Alshajaraapp"
   }
 ]

@@ -1,7 +1,10 @@
 import frappe
-from frappe.utils import now, strip_html
+from frappe.utils import now, strip_html, now_datetime, add_days , getdate
 from frappe import _
-
+import io
+from frappe.utils.file_manager import save_file
+from barcode import Code128
+from barcode.writer import ImageWriter
 
 @frappe.whitelist()
 def add_quotation_note(quotation, note, next_follow_up_date=None):
@@ -57,10 +60,6 @@ def add_quotation_note(quotation, note, next_follow_up_date=None):
 
 	return True
 
-
-import frappe
-from frappe.utils import now_datetime, add_days
-
 @frappe.whitelist()
 def mark_quotation_sent(name):
     now = now_datetime()
@@ -77,9 +76,6 @@ def mark_quotation_sent(name):
     )
 
     frappe.db.commit()
-
-import frappe
-from frappe.utils import getdate
 
 def set_custom_quotation_name(doc, method):
     # Safety: do not override if already named
@@ -134,13 +130,6 @@ def set_custom_quotation_name(doc, method):
 
     # 6. Final name
     doc.name = f"{prefix}{series_str}"
-
-
-import frappe
-import io
-from frappe.utils.file_manager import save_file
-from barcode import Code128
-from barcode.writer import ImageWriter
 
 def generate_quotation_barcode(doc, method):
     """
