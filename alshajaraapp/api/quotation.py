@@ -5,6 +5,7 @@ import io
 from frappe.utils.file_manager import save_file
 from barcode import Code128
 from barcode.writer import ImageWriter
+from erpnext.selling.doctype.quotation.quotation import make_sales_order as core_make_sales_order
 
 @frappe.whitelist()
 def add_quotation_note(quotation, note, next_follow_up_date=None):
@@ -82,10 +83,10 @@ def set_custom_quotation_name(doc, method):
     if doc.name and not doc.name.startswith("New"):
         return
 
-    # 1. Company Code (STATIC or derive if needed)
+    # 1. Company Code (static as per requirement)
     company_code = "3S"
 
-    # 2. Date parts from transaction_date
+    # 2. Date parts
     if not doc.transaction_date:
         frappe.throw("Transaction Date is required to generate Quotation number")
 
@@ -94,20 +95,36 @@ def set_custom_quotation_name(doc, method):
     month = date.strftime("%m")
     day = date.strftime("%d")
 
-    # 3. Brand from items table (first item)
+    # 3. Collect UNIQUE brand abbreviations from items
     if not doc.items:
         frappe.throw("At least one item is required to generate Quotation number")
 
-    brand_value = doc.items[0].brand
-    if not brand_value:
-        frappe.throw("Brand is required in Quotation Item")
+    brand_abbrs = set()
 
-    brand_code = brand_value.strip()[0].upper()
+    for item in doc.items:
+        if not item.brand:
+            frappe.throw("Brand is required for all items in Quotation")
 
-    # 4. Prefix for running series
-    prefix = f"{company_code}{year}{brand_code}{month}{day}"
+        abbreviation = frappe.db.get_value(
+            "Brand",
+            item.brand,
+            "abbreviation"
+        )
 
-    # 5. Get last running number
+        if not abbreviation:
+            frappe.throw(
+                f"Abbreviation is missing for Brand: {item.brand}"
+            )
+
+        brand_abbrs.add(abbreviation.strip().upper())
+
+    # Deterministic order
+    brand_abbr_str = "".join(sorted(brand_abbrs))
+
+    # 4. Prefix
+    prefix = f"{company_code}{year}{brand_abbr_str}{month}{day}"
+
+    # 5. Running series (last 2 digits)
     last_name = frappe.db.sql(
         """
         SELECT name
@@ -166,3 +183,25 @@ def generate_quotation_barcode(doc, method):
         "barcode",
         file_doc.file_url
     )
+
+@frappe.whitelist()
+def make_sales_order_with_shipping_status(source_name, target_doc=None):
+    """
+    Create Sales Order from Quotation
+    and sync Shipping Status
+    """
+
+    # Call core ERPNext function
+    sales_order = core_make_sales_order(source_name, target_doc)
+
+    # Fetch Shipping Status from Quotation
+    shipping_status = frappe.db.get_value(
+        "Quotation",
+        source_name,
+        "shipping_status"
+    )
+
+    if shipping_status:
+        sales_order.shipping_status = shipping_status
+
+    return sales_order

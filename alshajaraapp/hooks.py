@@ -13,14 +13,20 @@ fixtures = [
 
 doctype_js = {
     "Quotation": "public/js/quotation.js",
-    "Opportunity": "public/js/opportunity.js"
+    "Opportunity": "public/js/opportunity.js",
+    "Sales Invoice": "public/js/sales_invoice.js"
 }
 
 doc_events = {
     "Quotation": {
         "autoname": "alshajaraapp.api.quotation.set_custom_quotation_name",
-        "after_insert": "alshajaraapp.api.quotation.generate_quotation_barcode"
-    }
+        "after_insert": "alshajaraapp.api.quotation.generate_quotation_barcode",
+        }
+}
+
+override_whitelisted_methods = {
+    "erpnext.selling.doctype.quotation.quotation.make_sales_order":
+        "alshajaraapp.api.quotation.make_sales_order_with_shipping_status"
 }
 
 

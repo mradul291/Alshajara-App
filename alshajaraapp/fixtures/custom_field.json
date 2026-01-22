@@ -170,6 +170,47 @@
     "label": "Total Profit %",
     "read_only": 1,
     "precision": 2,
-    "insert_after": "total_profit_amount"
+    "insert_after": ",total_profit_amount"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-shipping_status",
+    "dt": "Quotation",
+    "fieldname": "shipping_status",
+    "fieldtype": "Select",
+    "label": "Shipping Status",
+    "options": "\nNot Shipped\nShipped\nReceived",
+    "insert_after": "valid_till"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Sales Order-shipping_status",
+    "dt": "Sales Order",
+    "fieldname": "shipping_status",
+    "fieldtype": "Select",
+    "label": "Shipping Status",
+    "options": "\nNot Shipped\nShipped\nReceived",
+    "read_only": 1,
+    "insert_after": "po_no"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Sales Invoice-total_received",
+    "dt": "Sales Invoice",
+    "fieldname": "total_received",
+    "fieldtype": "Currency",
+    "label": "Total Received",
+    "read_only": 1,
+    "allow_on_submit": 1,
+    "insert_after": "total_advance"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Brand-abbreviation",
+    "dt": "Brand",
+    "fieldname": "abbreviation",
+    "fieldtype": "Data",
+    "label": "Abbreviation",
+    "insert_after": "description"
   }
 ]
