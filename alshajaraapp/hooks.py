@@ -20,8 +20,9 @@ doctype_js = {
 doc_events = {
     "Quotation": {
         "autoname": "alshajaraapp.api.quotation.set_custom_quotation_name",
+        "before_insert": "alshajaraapp.api.quotation.reset_barcode_on_amend",
         "after_insert": "alshajaraapp.api.quotation.generate_quotation_barcode",
-        }
+    }
 }
 
 override_whitelisted_methods = {

@@ -205,3 +205,12 @@ def make_sales_order_with_shipping_status(source_name, target_doc=None):
         sales_order.shipping_status = shipping_status
 
     return sales_order
+
+def reset_barcode_on_amend(doc, method):
+    """
+    On Amend, clear barcode fields so that
+    after_insert regenerates barcode for new name
+    """
+    if doc.amended_from:
+        doc.barcode = None
+        doc.barcode_preview = None
