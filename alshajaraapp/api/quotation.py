@@ -214,3 +214,4 @@ def reset_barcode_on_amend(doc, method):
     if doc.amended_from:
         doc.barcode = None
         doc.barcode_preview = None
+        doc._sent = "Not Sent"
