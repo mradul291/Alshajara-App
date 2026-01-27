@@ -212,5 +212,43 @@
     "fieldtype": "Data",
     "label": "Abbreviation",
     "insert_after": "description"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Opportunity-project_capacity",
+    "dt": "Opportunity",
+    "fieldname": "project_capacity",
+    "fieldtype": "Float",
+    "label": "Project Capacity",
+    "insert_after": "project"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Opportunity-capacity_unit",
+    "dt": "Opportunity",
+    "fieldname": "capacity_unit",
+    "fieldtype": "Select",
+    "label": "Capacity Unit",
+    "options": "MW\nGW\nkW\nMVA",
+    "insert_after": "probability"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-project_capacity",
+    "dt": "Quotation",
+    "fieldname": "project_capacity",
+    "fieldtype": "Float",
+    "label": "Project Capacity",
+    "insert_after": "project"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-capacity_unit",
+    "dt": "Quotation",
+    "fieldname": "capacity_unit",
+    "fieldtype": "Select",
+    "label": "Capacity Unit",
+    "options": "MW\nGW\nkW\nMVA",
+    "insert_after": "shipping_status"
   }
 ]

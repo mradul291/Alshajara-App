@@ -53,5 +53,38 @@
     "property_type": "Data",
     "value": "Company Name",
     "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Property Setter",
+    "name": "Quotation-tax_category-hidden",
+    "doctype_or_field": "DocField",
+    "doc_type": "Quotation",
+    "field_name": "tax_category",
+    "property": "hidden",
+    "property_type": "Check",
+    "value": "1",
+    "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Property Setter",
+    "name": "Quotation-shipping_rule-hidden",
+    "doctype_or_field": "DocField",
+    "doc_type": "Quotation",
+    "field_name": "shipping_rule",
+    "property": "hidden",
+    "property_type": "Check",
+    "value": "1",
+    "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Property Setter",
+    "name": "Quotation-incoterm-hidden",
+    "doctype_or_field": "DocField",
+    "doc_type": "Quotation",
+    "field_name": "incoterm",
+    "property": "hidden",
+    "property_type": "Check",
+    "value": "1",
+    "module": "Alshajaraapp"
   }
 ]

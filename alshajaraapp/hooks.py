@@ -27,8 +27,14 @@ doc_events = {
 
 override_whitelisted_methods = {
     "erpnext.selling.doctype.quotation.quotation.make_sales_order":
-        "alshajaraapp.api.quotation.make_sales_order_with_shipping_status"
+        "alshajaraapp.api.quotation.make_sales_order_with_shipping_status",
+    "erpnext.crm.doctype.opportunity.opportunity.make_quotation":
+        "alshajaraapp.api.opportunity.make_quotation",
 }
+
+# app_include_js = [
+#     "/assets/alshajaraapp/js/quotation_list.js"
+# ]
 
 
 # Apps
