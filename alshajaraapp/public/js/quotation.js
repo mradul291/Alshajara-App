@@ -41,6 +41,11 @@ frappe.ui.form.on("Quotation", {
 
 frappe.ui.form.on("Quotation", {
 	refresh(frm) {
+		// Hide button for System Manager
+		if (frappe.user.has_role("System Manager")) {
+			return;
+		}
+
 		if (frm.doc.docstatus === 1 && frm.doc._sent === "Not Sent") {
 			frm.add_custom_button(__("Mark as Sent"), function () {
 				frappe.call({
@@ -48,7 +53,7 @@ frappe.ui.form.on("Quotation", {
 					args: {
 						name: frm.doc.name,
 					},
-					callback: function () {
+					callback() {
 						frm.reload_doc();
 					},
 				});

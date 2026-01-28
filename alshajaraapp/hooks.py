@@ -17,6 +17,10 @@ doctype_js = {
     "Sales Invoice": "public/js/sales_invoice.js"
 }
 
+doctype_list_js = {
+    "Quotation": "public/js/quotation_list.js"
+}
+
 doc_events = {
     "Quotation": {
         "autoname": "alshajaraapp.api.quotation.set_custom_quotation_name",

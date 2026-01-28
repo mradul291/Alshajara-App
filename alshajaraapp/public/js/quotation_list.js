@@ -1,10 +1,15 @@
-// frappe.listview_settings["Quotation"] = {
-// 	get_indicator: function (doc) {
-// 		const sent_colors = {
-// 			"Not Sent": "orange",
-// 			Sent: "green",
-// 		};
+frappe.listview_settings["Quotation"] = {
+	formatters: {
+		_sent(val) {
+			if (val === "Sent") {
+				return `<span class="indicator green">${val}</span>`;
+			}
 
-// 		return [__(doc._sent), sent_colors[doc._sent], "_sent,=," + doc._sent];
-// 	},
-// };
+			if (val === "Not Sent") {
+				return `<span class="indicator orange">${val}</span>`;
+			}
+
+			return val;
+		},
+	},
+};
