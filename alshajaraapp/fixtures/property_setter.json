@@ -86,5 +86,16 @@
     "property_type": "Check",
     "value": "1",
     "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Property Setter",
+    "name": "Purchase Order-schedule_date-label",
+    "doctype_or_field": "DocField",
+    "doc_type": "Purchase Order",
+    "field_name": "schedule_date",
+    "property": "label",
+    "property_type": "Data",
+    "value": "ETA Date",
+    "module": "Alshajaraapp"
   }
 ]

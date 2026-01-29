@@ -14,7 +14,8 @@ fixtures = [
 doctype_js = {
     "Quotation": "public/js/quotation.js",
     "Opportunity": "public/js/opportunity.js",
-    "Sales Invoice": "public/js/sales_invoice.js"
+    "Sales Invoice": "public/js/sales_invoice.js",
+    "Purchase Order": "public/js/purchase_order.js",
 }
 
 doctype_list_js = {
@@ -26,7 +27,32 @@ doc_events = {
         "autoname": "alshajaraapp.api.quotation.set_custom_quotation_name",
         "before_insert": "alshajaraapp.api.quotation.reset_barcode_on_amend",
         "after_insert": "alshajaraapp.api.quotation.generate_quotation_barcode",
+    },
+    "Sales Order": {
+        "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
+        "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
+    },
+    "Sales Invoice": {
+        "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
+        "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
+    },
+    "Delivery Note": {
+        "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
+        "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
+    },
+    "Purchase Order": {
+        "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
+        "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
+    },
+    "Purchase Invoice": {
+        "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
+        "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
+    },
+    "Purchase Receipt": {
+        "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
+        "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
     }
+
 }
 
 override_whitelisted_methods = {
@@ -34,6 +60,8 @@ override_whitelisted_methods = {
         "alshajaraapp.api.quotation.make_sales_order_with_shipping_status",
     "erpnext.crm.doctype.opportunity.opportunity.make_quotation":
         "alshajaraapp.api.opportunity.make_quotation",
+    "erpnext.buying.doctype.supplier_quotation.supplier_quotation.make_purchase_order":
+        "alshajaraapp.api.supplier_quotation.make_purchase_order"
 }
 
 # app_include_js = [

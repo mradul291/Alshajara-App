@@ -250,5 +250,175 @@
     "label": "Capacity Unit",
     "options": "MW\nGW\nkW\nMVA",
     "insert_after": "shipping_status"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Sales Order-barcode",
+    "dt": "Sales Order",
+    "fieldname": "barcode",
+    "fieldtype": "Attach Image",
+    "label": "Sales Order Barcode",
+    "read_only": 1,
+    "hidden": 1,
+    "insert_after": "po_date"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Sales Order-barcode_preview",
+    "dt": "Sales Order",
+    "fieldname": "barcode_preview",
+    "fieldtype": "Image",
+    "label": "Barcode Preview",
+    "options": "barcode",
+    "read_only": 1,
+    "insert_after": "barcode"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Sales Invoice-barcode",
+    "dt": "Sales Invoice",
+    "fieldname": "barcode",
+    "fieldtype": "Attach Image",
+    "label": "Sales Invoice Barcode",
+    "read_only": 1,
+    "hidden": 1,
+    "insert_after": "is_debit_note"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Sales Invoice-barcode_preview",
+    "dt": "Sales Invoice",
+    "fieldname": "barcode_preview",
+    "fieldtype": "Image",
+    "label": "Barcode Preview",
+    "options": "barcode",
+    "read_only": 1,
+    "insert_after": "barcode"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Delivery Note-barcode",
+    "dt": "Delivery Note",
+    "fieldname": "barcode",
+    "fieldtype": "Attach Image",
+    "label": "Delivery Note Barcode",
+    "read_only": 1,
+    "hidden": 1,
+    "insert_after": "is_return"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Delivery Note-barcode_preview",
+    "dt": "Delivery Note",
+    "fieldname": "barcode_preview",
+    "fieldtype": "Image",
+    "label": "Barcode Preview",
+    "options": "barcode",
+    "read_only": 1,
+    "insert_after": "barcode"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Order-barcode",
+    "dt": "Purchase Order",
+    "fieldname": "barcode",
+    "fieldtype": "Attach Image",
+    "label": "Purchase Order Barcode",
+    "read_only": 1,
+    "hidden": 1,
+    "insert_after": "is_subcontracted"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Order-barcode_preview",
+    "dt": "Purchase Order",
+    "fieldname": "barcode_preview",
+    "fieldtype": "Image",
+    "label": "Barcode Preview",
+    "options": "barcode",
+    "read_only": 1,
+    "insert_after": "barcode"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Invoice-barcode",
+    "dt": "Purchase Invoice",
+    "fieldname": "barcode",
+    "fieldtype": "Attach Image",
+    "label": "Purchase Invoice Barcode",
+    "read_only": 1,
+    "hidden": 1,
+    "insert_after": "apply_tds"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Invoice-barcode_preview",
+    "dt": "Purchase Invoice",
+    "fieldname": "barcode_preview",
+    "fieldtype": "Image",
+    "label": "Barcode Preview",
+    "options": "barcode",
+    "read_only": 1,
+    "insert_after": "barcode"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Receipt-barcode",
+    "dt": "Purchase Receipt",
+    "fieldname": "barcode",
+    "fieldtype": "Attach Image",
+    "label": "Purchase Receipt Barcode",
+    "read_only": 1,
+    "hidden": 1,
+    "insert_after": "is_return"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Receipt-barcode_preview",
+    "dt": "Purchase Receipt",
+    "fieldname": "barcode_preview",
+    "fieldtype": "Image",
+    "label": "Barcode Preview",
+    "options": "barcode",
+    "read_only": 1,
+    "insert_after": "barcode"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Supplier Quotation-quotation_date",
+    "dt": "Supplier Quotation",
+    "fieldname": "quotation_date",
+    "fieldtype": "Date",
+    "label": "Quotation Date",
+    "insert_after": "quotation_number"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Order-supplier_quotation_no",
+    "dt": "Purchase Order",
+    "fieldname": "supplier_quotation_no",
+    "fieldtype": "Data",
+    "label": "Supplier Quotation No",
+    "read_only": 1,
+    "insert_after": "schedule_date"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Order-supplier_quotation_date",
+    "dt": "Purchase Order",
+    "fieldname": "supplier_quotation_date",
+    "fieldtype": "Date",
+    "label": "Supplier Quotation Date",
+    "read_only": 1,
+    "insert_after": "supplier_quotation_no"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Purchase Order-approval_comment",
+    "dt": "Purchase Order",
+    "fieldname": "approval_comment",
+    "label": "Approval Comment / Reason",
+    "fieldtype": "Small Text",
+    "insert_after": "supplier"
   }
 ]
