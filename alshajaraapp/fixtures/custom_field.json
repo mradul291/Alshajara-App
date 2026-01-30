@@ -420,5 +420,14 @@
     "label": "Approval Comment / Reason",
     "fieldtype": "Small Text",
     "insert_after": "supplier"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Item-phase",
+    "dt": "Item",
+    "fieldname": "phase",
+    "label": "Phase",
+    "fieldtype": "Data",
+    "insert_after": "stock_uom"
   }
 ]
