@@ -429,5 +429,27 @@
     "label": "Phase",
     "fieldtype": "Data",
     "insert_after": "stock_uom"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Request for Quotation-barcode",
+    "dt": "Request for Quotation",
+    "fieldname": "barcode",
+    "fieldtype": "Attach Image",
+    "label": "RFQ Barcode",
+    "read_only": 1,
+    "hidden": 1,
+    "insert_after": "status"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Request for Quotation-barcode_preview",
+    "dt": "Request for Quotation",
+    "fieldname": "barcode_preview",
+    "fieldtype": "Image",
+    "label": "Barcode Preview",
+    "options": "barcode",
+    "read_only": 1,
+    "insert_after": "barcode"
   }
 ]

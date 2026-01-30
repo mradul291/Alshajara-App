@@ -22,6 +22,10 @@ doctype_list_js = {
     "Quotation": "public/js/quotation_list.js"
 }
 
+app_include_css = [
+    "/assets/alshajaraapp/css/navbar.css"
+]
+
 doc_events = {
     "Quotation": {
         "autoname": "alshajaraapp.api.quotation.set_custom_quotation_name",
@@ -51,8 +55,12 @@ doc_events = {
     "Purchase Receipt": {
         "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
         "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
+    },
+    "Request for Quotation": {
+        "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
+        "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
     }
-
+    
 }
 
 override_whitelisted_methods = {
