@@ -41,11 +41,9 @@ def generate_document_barcode(doc, method):
 
 def reset_document_barcode_on_amend(doc, method):
     """
-    Clears barcode fields on amend for any doctype
+    Reset barcode if document is created via mapping
+    (PO → PI / PR etc.)
     """
-
-    if not doc.amended_from:
-        return
 
     if hasattr(doc, "barcode"):
         doc.barcode = None
