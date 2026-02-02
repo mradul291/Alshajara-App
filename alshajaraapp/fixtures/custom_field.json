@@ -461,5 +461,27 @@
     "fieldtype": "Data",
     "read_only": 1,
     "insert_after": "description"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Payment Entry-barcode",
+    "dt": "Payment Entry",
+    "fieldname": "barcode",
+    "fieldtype": "Attach Image",
+    "label": "Payment Barcode",
+    "read_only": 1,
+    "hidden": 1,
+    "insert_after": "company"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Payment Entry-barcode_preview",
+    "dt": "Payment Entry",
+    "fieldname": "barcode_preview",
+    "fieldtype": "Image",
+    "label": "Barcode Preview",
+    "options": "barcode",
+    "read_only": 1,
+    "insert_after": "barcode"
   }
 ]
