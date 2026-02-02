@@ -451,5 +451,15 @@
     "options": "barcode",
     "read_only": 1,
     "insert_after": "barcode"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "ToDo-latest_comment",
+    "dt": "ToDo",
+    "fieldname": "latest_comment",
+    "label": "Latest Comment",
+    "fieldtype": "Data",
+    "read_only": 1,
+    "insert_after": "description"
   }
 ]

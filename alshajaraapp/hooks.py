@@ -59,6 +59,9 @@ doc_events = {
     "Request for Quotation": {
         "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
         "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
+    },
+    "Comment": {
+        "after_insert": "alshajaraapp.api.todo_comment.update_todo_latest_comment"
     }
     
 }
