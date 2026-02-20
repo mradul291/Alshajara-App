@@ -459,7 +459,7 @@
     "fieldname": "latest_comment",
     "label": "Latest Comment",
     "fieldtype": "Data",
-    "read_only": 1,
+    "read_only": 0,
     "insert_after": "description"
   },
   {
