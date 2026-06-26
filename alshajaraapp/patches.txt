@@ -3,4 +3,15 @@
 # Read docs to understand patches: https://frappeframework.com/docs/v14/user/en/database-migrations
 
 [post_model_sync]
+<<<<<<< HEAD
 # Patches added in this section will be executed after doctypes are migrated
+=======
+# Patches added in this section will be executed after doctypes are migrated
+alshajaraapp.patches.ensure_quotation_stock_status_fields
+alshajaraapp.patches.create_auto_purchase_order_custom_fields
+alshajaraapp.patches.create_quotation_auto_purchase_order_custom_fields
+alshajaraapp.patches.ensure_quotation_available_stock_po_reference_fields
+alshajaraapp.patches.cleanup_obsolete_quotation_auto_po_fields
+alshajaraapp.patches.remove_child_grid_layout_overrides
+alshajaraapp.patches.set_sales_order_purchase_order_field_order
+>>>>>>> upstream/test-yugandhara

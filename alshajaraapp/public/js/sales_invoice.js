@@ -22,3 +22,46 @@ function calculate_total_received(frm) {
 
 	frm.set_value("total_received", flt(total_received, 2));
 }
+<<<<<<< HEAD
+=======
+
+
+
+frappe.ui.form.on("Sales Invoice", {
+    refresh(frm) {
+
+        if (
+            frm.doc.docstatus === 1 &&
+            frm.doc.outstanding_amount > 0
+        ) {
+
+            frm.add_custom_button(
+                __("Send Payment Reminder"),
+                () => {
+
+                    frappe.call({
+                        method:
+                        "alshajaraapp.api.comman.send_payment_reminder",
+
+                        args: {
+                            invoice: frm.doc.name
+                        },
+
+                        callback() {
+                            console.log(frm.doc.contact_email)
+                            
+                            console.log(frm.doc.name)
+                            frappe.msgprint(
+                                __("Payment Reminder Sent")
+                            );
+                        }
+                    });
+
+                }
+            );
+
+        }
+    }
+});
+
+>>>>>>> upstream/test-yugandhara

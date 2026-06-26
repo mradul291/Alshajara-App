@@ -12,4 +12,8 @@ frappe.listview_settings["Quotation"] = {
 			return val;
 		},
 	},
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> upstream/test-yugandhara

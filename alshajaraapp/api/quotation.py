@@ -1,11 +1,91 @@
 import frappe
+<<<<<<< HEAD
 from frappe.utils import now, strip_html, now_datetime, add_days , getdate
 from frappe import _
 import io
+=======
+from frappe.utils import now, strip_html, now_datetime, add_days, getdate, nowdate, flt
+from frappe import _
+import io
+import requests
+>>>>>>> upstream/test-yugandhara
 from frappe.utils.file_manager import save_file
 from barcode import Code128
 from barcode.writer import ImageWriter
 from erpnext.selling.doctype.quotation.quotation import make_sales_order as core_make_sales_order
+<<<<<<< HEAD
+=======
+from erpnext.setup.utils import get_exchange_rate
+
+@frappe.whitelist()
+def get_live_exchange_rate(from_currency, to_currency, transaction_date=None):
+    if not from_currency or not to_currency:
+        return 0
+
+    if from_currency == to_currency:
+        return 1
+
+    if not transaction_date:
+        transaction_date = nowdate()
+
+    # Prefer ERPNext's own exchange-rate resolution so the result matches
+    # Currency Exchange records and pegged-currency logic.
+    try:
+        rate = get_exchange_rate(from_currency, to_currency, transaction_date=transaction_date)
+        if rate and flt(rate) > 0:
+            return flt(rate)
+    except Exception:
+        pass
+
+    response = requests.get(
+        f"https://open.er-api.com/v6/latest/{from_currency}", timeout=8
+    )
+    response.raise_for_status()
+    payload = response.json() or {}
+    rates = payload.get("rates") or {}
+    return flt(rates.get(to_currency) or 0)
+
+
+@frappe.whitelist()
+def create_currency_exchange(from_currency, to_currency, rate=None, key_date=None):
+    """Create a Currency Exchange record for `key_date` using `rate` (or live rate if not provided).
+
+    - `from_currency`, `to_currency`: currency codes, e.g. 'USD', 'KWD'
+    - `rate`: optional numeric conversion rate (from -> to). If omitted, will call `get_live_exchange_rate`.
+    - `key_date`: optional date string YYYY-MM-DD; defaults to today.
+
+    Returns the name of the created Currency Exchange record.
+    """
+    if not from_currency or not to_currency:
+        frappe.throw("from_currency and to_currency are required")
+
+    if not key_date:
+        key_date = nowdate()
+
+    if not rate:
+            rate = get_live_exchange_rate(from_currency, to_currency, key_date)
+
+    if not rate or flt(rate) <= 0:
+        frappe.throw(f"Could not determine exchange rate for {from_currency} to {to_currency}")
+
+    doc = frappe.get_doc(
+        {
+            "doctype": "Currency Exchange",
+            "date": key_date,
+            "from_currency": from_currency,
+            "to_currency": to_currency,
+            "exchange_rate": flt(rate),
+            # make it applicable for both buying and selling to be safe
+            "for_buying": 1,
+            "for_selling": 1,
+        }
+    )
+    doc.insert(ignore_permissions=True)
+    frappe.db.commit()
+
+    return doc.name
+
+>>>>>>> upstream/test-yugandhara
 
 @frappe.whitelist()
 def add_quotation_note(quotation, note, next_follow_up_date=None):
@@ -65,15 +145,28 @@ def add_quotation_note(quotation, note, next_follow_up_date=None):
 def mark_quotation_sent(name):
     now = now_datetime()
 
+<<<<<<< HEAD
+=======
+    # Record that this quotation was sent and who sent it
+>>>>>>> upstream/test-yugandhara
     frappe.db.set_value(
         "Quotation",
         name,
         {
             "_sent": "Sent",
+<<<<<<< HEAD
             "last_communication_note": "Quotation Sent",
             "last_communication_date": now,
             "next_follow_up_date": add_days(now, 1)
         }
+=======
+            "send_by": frappe.session.user,
+            "last_communication_note": "Quotation Sent",
+            "last_communication_date": now,
+            "next_follow_up_date": add_days(now, 1),
+        },
+        update_modified=False,
+>>>>>>> upstream/test-yugandhara
     )
 
     frappe.db.commit()
@@ -206,6 +299,96 @@ def make_sales_order_with_shipping_status(source_name, target_doc=None):
 
     return sales_order
 
+<<<<<<< HEAD
+=======
+
+def compute_and_persist_quotation_profit(doc, method=None):
+    """
+    Server-side calculation of profit so values persist after save.
+    Runs as a Quotation doc event (before_save).
+    """
+    # defensive: ensure items exists
+    if not getattr(doc, "items", None):
+        doc.quotation_total_cost = 0.0
+        doc.quotation_total_selling_price = 0.0
+        doc.total_profit_amount = 0.0
+        doc.total_profit_percentage = 0.0
+        return
+
+    grand_total_cost = 0.0
+    grand_total_selling = 0.0
+    grand_total_profit = 0.0
+
+    for item in doc.items:
+        qty = flt(item.qty or 0)
+        cost_rate = flt(item.valuation_rate or item.price_list_rate or 0)
+        selling_rate = flt(item.rate or 0)
+
+        total_cost = qty * cost_rate
+        total_selling = qty * selling_rate
+
+        # Clamp negative profit to zero to match client behaviour
+        profit_amount = max(total_selling - total_cost, 0)
+
+        total_profit_percentage = 0.0
+        if total_cost > 0:
+            total_profit_percentage = (profit_amount / total_cost) * 100
+
+        # assign back to child row so it's saved
+        item.total_cost = flt(total_cost, 2)
+        item.total_selling_price = flt(total_selling, 2)
+        item.profit_amount = flt(profit_amount, 2)
+        item.total_profit_percentage = flt(total_profit_percentage, 2)
+
+        grand_total_cost += flt(item.total_cost)
+        grand_total_selling += flt(item.total_selling_price)
+        grand_total_profit += flt(item.profit_amount)
+
+    grand_profit_percentage = 0.0
+    if grand_total_cost > 0:
+        grand_profit_percentage = (grand_total_profit / grand_total_cost) * 100
+
+    # set parent fields on the doc so they're saved
+    doc.quotation_total_cost = flt(grand_total_cost, 2)
+    doc.quotation_total_selling_price = flt(grand_total_selling, 2)
+    doc.total_profit_amount = flt(grand_total_profit, 2)
+    doc.total_profit_percentage = flt(grand_profit_percentage, 2)
+
+
+def ensure_quotation_conversion_rate(doc, method=None):
+    """
+    Avoid blocking save when Currency Exchange rows are missing.
+    Sets a safe fallback conversion_rate before standard validation.
+    """
+    if not getattr(doc, "currency", None) or not getattr(doc, "company", None):
+        return
+
+    company_currency = frappe.get_cached_value("Company", doc.company, "default_currency")
+
+    # Conversion rate must be company currency per transaction currency.
+    if company_currency and doc.currency == company_currency:
+        doc.conversion_rate = 1
+    else:
+        rate = 0
+        try:
+            rate = flt(get_exchange_rate(doc.currency, company_currency, transaction_date=doc.transaction_date or nowdate()))
+        except Exception:
+            rate = 0
+
+        if rate and rate > 0:
+            doc.conversion_rate = rate
+        else:
+            # Last fallback to keep save unblocked when exchange lookup fails.
+            doc.conversion_rate = 1
+
+    # Taxes and charges rows may also require per-row exchange_rate.
+    # Fill missing values from document conversion_rate to avoid
+    # "Row X: Exchange Rate is mandatory" during ERPNext validation.
+    for tax in doc.get("taxes") or []:
+        if not flt(getattr(tax, "exchange_rate", 0)):
+            tax.exchange_rate = flt(doc.conversion_rate or 1)
+
+>>>>>>> upstream/test-yugandhara
 def reset_barcode_on_amend(doc, method):
     """
     On Amend, clear barcode fields so that
