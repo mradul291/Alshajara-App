@@ -83,11 +83,7 @@
     "name": "Opportunity-last_communicated_note",
     "dt": "Opportunity",
     "fieldname": "last_communicated_note",
-<<<<<<< HEAD
-    "fieldtype": "Data",
-=======
     "fieldtype": "Text Editor",
->>>>>>> upstream/test-yugandhara
     "label": "Last Note",
     "read_only": 1,
     "insert_after": "notes"
@@ -153,13 +149,9 @@
     "label": "Total Profit %",
     "read_only": 1,
     "precision": 2,
-<<<<<<< HEAD
-    "insert_after": "margin_rate_or_amount"
-=======
     "insert_after": "amount",
     "in_list_view": 1,
     "columns": 1
->>>>>>> upstream/test-yugandhara
   },
   {
     "doctype": "Custom Field",
@@ -493,10 +485,6 @@
     "options": "barcode",
     "read_only": 1,
     "insert_after": "barcode"
-<<<<<<< HEAD
-  }
-]
-=======
   },
   {
     "doctype": "Custom Field",
@@ -833,4 +821,3 @@
     "allow_on_submit": 1
   }
   ]
->>>>>>> upstream/test-yugandhara

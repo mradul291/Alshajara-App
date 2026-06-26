@@ -204,7 +204,6 @@ function calculate_total_profit(frm) {
 
 	frm.set_value("total_profit_percentage", flt(total_profit_percentage, 2));
 }
-=======
 
 	async currency(frm) {
 		const current_currency = frm.doc.currency;
@@ -924,4 +923,4 @@ frappe.ui.form.on("Quotation Item", {
 		}, 0);
 	},
 });
->>>>>>> upstream/test-yugandhara
+

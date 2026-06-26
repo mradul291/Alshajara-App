@@ -9,22 +9,18 @@ app_license = "mit"
 fixtures = [
     {"dt": "Custom Field", "filters": [["module", "=", "Alshajaraapp"]]},
     {"dt": "Property Setter", "filters": [["module", "=", "Alshajaraapp"]]},
-<<<<<<< HEAD
 ]
 
-doctype_js = {
-=======
 
-]
 
 doctype_js = {
     "Lead": "public/js/lead.js",
->>>>>>> upstream/test-yugandhara
+
     "Quotation": "public/js/quotation.js",
     "Opportunity": "public/js/opportunity.js",
     "Sales Invoice": "public/js/sales_invoice.js",
     "Purchase Order": "public/js/purchase_order.js",
-<<<<<<< HEAD
+
 }
 
 doctype_list_js = {
@@ -35,12 +31,11 @@ app_include_css = [
     "/assets/alshajaraapp/css/navbar.css"
 ]
 
-=======
-    "Item": "public/js/item.js",
-    "Price List": "public/js/price_list.js",
-}
+    
 
 doctype_list_js = {
+    "Item": "public/js/item.js",
+    "Price List": "public/js/price_list.js",
     "Quotation": "public/js/quotation_list.js",
     "Opportunity": "public/js/opportunity_list.js"
 }
@@ -53,27 +48,23 @@ app_include_css = [
 #     "alshajaraapp.patches.set_sales_order_purchase_order_field_order.apply_sales_order_purchase_order_field_order",
 # ]
 
->>>>>>> upstream/test-yugandhara
+
 doc_events = {
     "Quotation": {
         "autoname": "alshajaraapp.api.quotation.set_custom_quotation_name",
         "before_insert": "alshajaraapp.api.quotation.reset_barcode_on_amend",
-<<<<<<< HEAD
         "after_insert": "alshajaraapp.api.quotation.generate_quotation_barcode",
-=======
         "before_validate": "alshajaraapp.api.quotation.ensure_quotation_conversion_rate",
         "before_save": "alshajaraapp.api.quotation.compute_and_persist_quotation_profit",
         "after_insert": "alshajaraapp.api.quotation.generate_quotation_barcode",
         "on_submit": "alshajaraapp.quotation.quotation.create_purchase_orders_for_shortages",
->>>>>>> upstream/test-yugandhara
+
     },
     "Sales Order": {
         "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
         "after_insert": "alshajaraapp.api.comman.generate_document_barcode",
-<<<<<<< HEAD
-=======
+
         # "on_submit": "alshajaraapp.sales_order.sales_order.create_purchase_orders_for_shortages",
->>>>>>> upstream/test-yugandhara
     },
     "Sales Invoice": {
         "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
@@ -114,11 +105,6 @@ override_whitelisted_methods = {
     "erpnext.crm.doctype.opportunity.opportunity.make_quotation":
         "alshajaraapp.api.opportunity.make_quotation",
     "erpnext.buying.doctype.supplier_quotation.supplier_quotation.make_purchase_order":
-<<<<<<< HEAD
-        "alshajaraapp.api.supplier_quotation.make_purchase_order"
-}
-
-=======
         "alshajaraapp.api.supplier_quotation.make_purchase_order",
     "erpnext.crm.doctype.lead.lead.make_opportunity":
         "alshajaraapp.api.opportunity.custom_make_opportunity"
@@ -126,7 +112,7 @@ override_whitelisted_methods = {
 
 
 
->>>>>>> upstream/test-yugandhara
+
 # app_include_js = [
 #     "/assets/alshajaraapp/js/quotation_list.js"
 # ]
@@ -373,7 +359,3 @@ override_whitelisted_methods = {
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/test-yugandhara
