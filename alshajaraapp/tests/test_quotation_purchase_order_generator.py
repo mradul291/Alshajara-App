@@ -55,6 +55,9 @@ class CapturingQuotationPurchaseOrderGenerator(QuotationPurchaseOrderGenerator):
         self.created.append((supplier, lines))
         return frappe._dict(name=f"PO-{len(self.created)}")
 
+    def record_purchase_order_creation_details(self):
+        return None
+
     def notify_user(self, duplicate=False):
         return None
 
@@ -103,7 +106,7 @@ def make_item(
 
 
 class TestQuotationPurchaseOrderGenerator(unittest.TestCase):
-    def test_draft_quotation_does_not_create_purchase_order(self):
+    def test_draft_quotation_can_create_purchase_order_by_manual_action(self):
         quotation = make_quotation(
             make_item("QTI-1", "ITEM-1", 10, stock_status="Unavailable Stock")
         )
@@ -116,7 +119,7 @@ class TestQuotationPurchaseOrderGenerator(unittest.TestCase):
 
         generator.run()
 
-        self.assertEqual(generator.created, [])
+        self.assertEqual(len(generator.created), 1)
 
     def test_sufficient_stock_creates_no_purchase_order(self):
         quotation = make_quotation(
@@ -462,7 +465,8 @@ class TestQuotationPurchaseOrderGenerator(unittest.TestCase):
         generator.run()
 
         self.assertEqual(generator.created, [])
-        self.assertEqual(generator.created_purchase_orders, ["PO-EXISTING"])
+        self.assertEqual(generator.created_purchase_orders, [])
+        self.assertEqual(generator.duplicate_purchase_orders, ["PO-EXISTING"])
 
     def test_multiple_suppliers_create_one_purchase_order_per_supplier(self):
         quotation = make_quotation(

@@ -1,11 +1,8 @@
 import frappe
 from frappe import _
-from frappe.utils import cstr
+from frappe.utils import get_link_to_form
 
 from alshajaraapp.quotation.purchase_order_generator import QuotationPurchaseOrderGenerator
-
-APPROVE_WORKFLOW_ACTION = "Approve"
-APPROVED_WORKFLOW_STATES = {"Approve", "Approved"}
 
 
 def log_auto_po_debug(message, *args):
@@ -15,76 +12,82 @@ def log_auto_po_debug(message, *args):
         pass
 
 
-def get_selected_workflow_action():
-    try:
-        return cstr(frappe.form_dict.get("action")).strip()
-    except Exception:
-        return ""
+def get_existing_purchase_orders_for_quotation(quotation):
+    if not quotation:
+        return []
 
-
-def get_quotation_workflow_state(doc):
-    workflow_state = cstr(doc.get("workflow_state")).strip()
-    if workflow_state:
-        return workflow_state
-
-    try:
-        workflow_state_field = frappe.db.get_value(
-            "Workflow",
-            {"document_type": doc.doctype, "is_active": 1},
-            "workflow_state_field",
-        )
-    except Exception:
-        workflow_state_field = None
-
-    if workflow_state_field:
-        return cstr(doc.get(workflow_state_field)).strip()
-
-    return ""
-
-
-def should_create_auto_po_for_quotation_workflow(doc):
-    selected_action = get_selected_workflow_action()
-    if selected_action:
-        return selected_action == APPROVE_WORKFLOW_ACTION
-
-    return get_quotation_workflow_state(doc) in APPROVED_WORKFLOW_STATES
+    doc = frappe.get_doc("Quotation", quotation)
+    doc.check_permission("read")
+    return QuotationPurchaseOrderGenerator(doc, notify=False).get_existing_purchase_orders()
 
 
 def create_purchase_orders_for_shortages(doc, method=None):
-    """Quotation on_submit hook for automatic Purchase Order creation."""
+    """Legacy hook retained as a no-op; PO creation is now manual."""
     log_auto_po_debug(
-        "Quotation on_submit hook called for %s with docstatus %s",
+        "Quotation automatic PO creation is disabled for %s with docstatus %s",
         doc.name,
         doc.docstatus,
     )
+    return
 
-    if doc.docstatus != 1:
-        log_auto_po_debug(
-            "Skipping Quotation %s because docstatus is not submitted.", doc.name
-        )
-        return
 
-    if not should_create_auto_po_for_quotation_workflow(doc):
-        log_auto_po_debug(
-            "Skipping Quotation %s auto PO because workflow action/state is not Approve. action=%s state=%s",
-            doc.name,
-            get_selected_workflow_action() or "-",
-            get_quotation_workflow_state(doc) or "-",
-        )
-        return
+@frappe.whitelist()
+def get_manual_purchase_order_status(quotation):
+    """Return existing Quotation-linked Purchase Orders for client button state."""
+    purchase_orders = get_existing_purchase_orders_for_quotation(quotation)
+    return {
+        "has_purchase_orders": bool(purchase_orders),
+        "purchase_orders": purchase_orders,
+    }
 
-    try:
-        QuotationPurchaseOrderGenerator(doc).run()
-    except Exception:
-        frappe.log_error(
-            title=_("Auto Purchase Order generation failed for Quotation {0}").format(doc.name),
-            message=frappe.get_traceback(),
-        )
-        frappe.msgprint(
-            _(
-                "Quotation was submitted, but automatic Purchase Order generation failed. "
-                "Check Error Log."
-            ),
-            indicator="orange",
-            alert=True,
-        )
+
+@frappe.whitelist()
+def create_purchase_orders_from_quotation(quotation):
+    """Create Purchase Orders from a Quotation by explicit user action."""
+    if not quotation:
+        frappe.throw(_("Quotation is required."))
+
+    doc = frappe.get_doc("Quotation", quotation)
+    doc.check_permission("read")
+
+    if not frappe.has_permission("Purchase Order", "create"):
+        frappe.throw(_("You do not have permission to create Purchase Orders."), frappe.PermissionError)
+
+    generator = QuotationPurchaseOrderGenerator(doc, notify=False)
+    purchase_orders = generator.run()
+
+    if generator.duplicate_purchase_orders:
+        links = [
+            get_link_to_form("Purchase Order", po_name)
+            for po_name in generator.duplicate_purchase_orders
+        ]
+        message = _("Purchase Order already exists for this Quotation: {0}").format(", ".join(links))
+        frappe.msgprint(message, indicator="orange")
+        return {
+            "status": "already_exists",
+            "purchase_orders": generator.duplicate_purchase_orders,
+            "message": message,
+        }
+
+    if not purchase_orders:
+        message = _("No Purchase Order was created. Check stock, warehouse, and supplier setup for shortage items.")
+        frappe.msgprint(message, indicator="orange")
+        return {
+            "status": "no_purchase_order_created",
+            "purchase_orders": [],
+            "message": message,
+            "warnings": generator.warning_messages,
+            "skipped": generator.skipped_messages,
+        }
+
+    links = [get_link_to_form("Purchase Order", po_name) for po_name in purchase_orders]
+    message = _("Created Purchase Order: {0}").format(", ".join(links))
+    frappe.msgprint(message, indicator="green")
+
+    return {
+        "status": "created",
+        "purchase_orders": purchase_orders,
+        "message": message,
+        "warnings": generator.warning_messages,
+        "skipped": generator.skipped_messages,
+    }

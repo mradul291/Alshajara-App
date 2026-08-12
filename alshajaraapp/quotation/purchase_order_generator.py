@@ -7,7 +7,7 @@ import erpnext
 import frappe
 from erpnext.setup.utils import get_exchange_rate
 from frappe import _ as frappe_translate
-from frappe.utils import flt, get_link_to_form, getdate, nowdate
+from frappe.utils import flt, get_link_to_form, getdate, now_datetime, nowdate
 
 
 def _(message):
@@ -37,7 +37,7 @@ class QuotationShortageLine:
 class QuotationPurchaseOrderGenerator:
     """Create Purchase Orders for Quotation shortage quantities.
 
-    This class is called from the Quotation `on_submit` hook only. It uses the
+    This class is called from the manual Quotation action only. It uses the
     numeric available_stock_qty captured from the stock check state, not the
     rendered HTML stock_status field.
     ERPNext Purchase Orders have one supplier, so shortages are grouped by
@@ -46,23 +46,17 @@ class QuotationPurchaseOrderGenerator:
 
     LOGGER_NAME = "alshajaraapp.quotation_auto_po"
 
-    def __init__(self, quotation):
+    def __init__(self, quotation, notify=True):
         self.quotation = quotation
+        self.notify = notify
         self.created_purchase_orders = []
+        self.duplicate_purchase_orders = []
         self.skipped_messages = []
         self.warning_messages = []
         self.purchase_defaults_by_supplier = {}
 
     def run(self):
-        if self.quotation.docstatus != 1:
-            self.log_debug(
-                "Skipping Quotation {0}; docstatus is {1}.".format(
-                    self.quotation.name, self.quotation.docstatus
-                )
-            )
-            return []
-
-        self.log_debug("Starting Quotation auto PO for {0}.".format(self.quotation.name))
+        self.log_debug("Starting manual Quotation PO creation for {0}.".format(self.quotation.name))
 
         if not self.quotation.get("company"):
             self.log_skip(_("Quotation {0} has no company.").format(self.quotation.name))
@@ -73,14 +67,14 @@ class QuotationPurchaseOrderGenerator:
 
         existing_purchase_orders = self.get_existing_purchase_orders()
         if existing_purchase_orders:
-            self.created_purchase_orders.extend(existing_purchase_orders)
+            self.duplicate_purchase_orders = existing_purchase_orders
             self.log_debug(
                 "Skipping Quotation {0}; Purchase Order already exists: {1}".format(
                     self.quotation.name, existing_purchase_orders
                 )
             )
             self.notify_user(duplicate=True)
-            return self.created_purchase_orders
+            return []
 
         shortage_lines = self.get_shortage_lines()
         self.log_debug(
@@ -131,8 +125,25 @@ class QuotationPurchaseOrderGenerator:
                     frappe.get_traceback(),
                 )
 
+        self.record_purchase_order_creation_details()
         self.notify_user()
         return self.created_purchase_orders
+
+    def record_purchase_order_creation_details(self):
+        if not self.created_purchase_orders:
+            return
+
+        values = {}
+        quotation_meta = frappe.get_meta("Quotation")
+        user = frappe.session.user
+        user_full_name = frappe.db.get_value("User", user, "full_name") or user
+        if quotation_meta.has_field("po_created_by"):
+            values["po_created_by"] = user_full_name
+        if quotation_meta.has_field("po_created_at"):
+            values["po_created_at"] = now_datetime()
+
+        if values:
+            self.quotation.db_set(values, update_modified=False)
 
     def lock_quotation(self):
         frappe.db.sql(
@@ -522,12 +533,15 @@ class QuotationPurchaseOrderGenerator:
             pass
 
     def notify_user(self, duplicate=False):
+        if not self.notify:
+            return
+
         messages = []
 
-        if duplicate and self.created_purchase_orders:
+        if duplicate and self.duplicate_purchase_orders:
             links = [
                 get_link_to_form("Purchase Order", po_name)
-                for po_name in self.created_purchase_orders
+                for po_name in self.duplicate_purchase_orders
             ]
             messages.append(
                 _("Purchase Order already exists for this Quotation: {0}").format(", ".join(links))

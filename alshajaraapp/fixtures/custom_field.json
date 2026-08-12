@@ -794,6 +794,30 @@
   },
   {
     "doctype": "Custom Field",
+    "name": "Quotation-po_creation_section",
+    "dt": "Quotation",
+    "fieldname": "po_creation_section",
+    "fieldtype": "Section Break",
+    "label": "Purchase Order Creation Details",
+    "insert_after": "status",
+    "collapsible": 0,
+    "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-po_created_by",
+    "dt": "Quotation",
+    "fieldname": "po_created_by",
+    "fieldtype": "Data",
+    "label": "PO Created By",
+    "insert_after": "po_creation_section",
+    "read_only": 1,
+    "allow_on_submit": 1,
+    "no_copy": 1,
+    "module": "Alshajaraapp"
+  },
+  {
+    "doctype": "Custom Field",
     "name": "Country-territory",
     "dt": "Country",
     "fieldname": "territory",

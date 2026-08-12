@@ -31,9 +31,9 @@ app_include_css = [
     "/assets/alshajaraapp/css/navbar.css",
 ]
 
-# after_migrate = [
-#     "alshajaraapp.patches.set_sales_order_purchase_order_field_order.apply_sales_order_purchase_order_field_order",
-# ]
+after_migrate = [
+    "alshajaraapp.patches.add_quotation_po_creation_audit_fields.sync_quotation_po_creation_audit_fields",
+]
 
 doc_events = {
     "Quotation": {
@@ -42,7 +42,6 @@ doc_events = {
         "before_validate": "alshajaraapp.api.quotation.ensure_quotation_conversion_rate",
         "before_save": "alshajaraapp.api.quotation.compute_and_persist_quotation_profit",
         "after_insert": "alshajaraapp.api.quotation.generate_quotation_barcode",
-        "on_submit": "alshajaraapp.quotation.quotation.create_purchase_orders_for_shortages",
     },
     "Sales Order": {
         "before_insert": "alshajaraapp.api.comman.reset_document_barcode_on_amend",
@@ -99,6 +98,7 @@ override_whitelisted_methods = {
 #     "/assets/alshajaraapp/js/quotation_list.js"
 # ]
 
+default_home_page = "app/home"
 
 # Apps
 # ------------------
