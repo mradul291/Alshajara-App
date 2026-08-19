@@ -7,7 +7,7 @@ import erpnext
 import frappe
 from erpnext.setup.utils import get_exchange_rate
 from frappe import _ as frappe_translate
-from frappe.utils import flt, get_link_to_form, getdate, now_datetime, nowdate
+from frappe.utils import flt, get_fullname, get_link_to_form, getdate, now_datetime, nowdate
 
 
 def _(message):
@@ -136,9 +136,14 @@ class QuotationPurchaseOrderGenerator:
         values = {}
         quotation_meta = frappe.get_meta("Quotation")
         user = frappe.session.user
-        user_full_name = frappe.db.get_value("User", user, "full_name") or user
+        if not user or user == "Guest":
+            return
+
+        user_full_name = get_fullname(user) or user
         if quotation_meta.has_field("po_created_by"):
             values["po_created_by"] = user_full_name
+        if quotation_meta.has_field("po_created_by_name"):
+            values["po_created_by_name"] = user_full_name
         if quotation_meta.has_field("po_created_at"):
             values["po_created_at"] = now_datetime()
 

@@ -169,10 +169,11 @@ frappe.ui.form.on("Quotation", {
 	},
 });
 
+
 function add_create_purchase_order_button(frm) {
+
 	if (
 		frm.is_new()
-		|| frm.doc.po_created_by
 		|| !frappe.model.can_create("Purchase Order")
 	) {
 		return;
@@ -183,20 +184,38 @@ function add_create_purchase_order_button(frm) {
 		args: {
 			quotation: frm.doc.name,
 		},
+
 		callback(response) {
+
 			if (response.message?.has_purchase_orders) {
 				return;
 			}
-
-			frm.add_custom_button(__("Create Purchase Order"), () => {
-				create_purchase_order_from_quotation(frm);
-			}, __("Create"));
+			frm.add_custom_button(
+				__("Purchase Order"),
+				function () {
+					create_purchase_order_from_quotation(frm);
+				},
+				__("Create")
+			);
 		},
 	});
 }
 
+
 async function create_purchase_order_from_quotation(frm) {
-	await set_po_created_by_from_session(frm);
+
+	const user_fullname =
+		frappe.session.user_fullname || frappe.session.user;
+
+	await frappe.db.set_value(
+		"Quotation",
+		frm.doc.name,
+		"po_created_by",
+		user_fullname
+	);
+
+	await frm.set_value("po_created_by", user_fullname);
+	frm.refresh_field("po_created_by");
 
 	frappe.call({
 		method: "alshajaraapp.quotation.quotation.create_purchase_orders_from_quotation",
@@ -222,29 +241,6 @@ async function create_purchase_order_from_quotation(frm) {
 			frm.refresh_field("po_created_by");
 		},
 	});
-}
-
-async function set_po_created_by_from_session(frm) {
-
-	const logged_in_user = frappe.session.user;
-	
-	const user_info = typeof frappe.user_info === "function"
-		? frappe.user_info(logged_in_user)
-		: null;
-
-	let full_name = user_info?.fullname || user_info?.full_name || logged_in_user;
-
-	if (!full_name || full_name === logged_in_user) {
-		const response = await frappe.db.get_value("User", logged_in_user, "full_name");
-		full_name = response?.message?.full_name || logged_in_user;
-	}
-
-	
-	frm.set_value("po_created_by", full_name);
-	frm.refresh_field("po_created_by");
-
-	
-	return full_name;
 }
 
 function validate_quotation_reject_lost_reasons(frm) {

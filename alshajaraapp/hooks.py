@@ -16,7 +16,11 @@ doctype_js = {
     "Lead": "public/js/lead.js",
     "Quotation": "public/js/quotation.js",
     "Opportunity": "public/js/opportunity.js",
-    "Sales Invoice": "public/js/sales_invoice.js",
+    "Sales Order": "public/js/create_menu_filter.js",
+    "Sales Invoice": [
+        "public/js/sales_invoice.js",
+        "public/js/create_menu_filter.js",
+    ],
     "Purchase Order": "public/js/purchase_order.js",
     "Item": "public/js/item.js",
     "Price List": "public/js/price_list.js",

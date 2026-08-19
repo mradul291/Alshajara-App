@@ -116,6 +116,36 @@ class TestStockStatusStability(unittest.TestCase):
         self.assertNotIn("quotation_item_grid.css", hooks)
         self.assertFalse(Path("apps/alshajaraapp/alshajaraapp/public/css/quotation_item_grid.css").exists())
 
+    def test_sales_order_and_sales_invoice_create_menu_filter_is_registered(self):
+        hooks = Path("apps/alshajaraapp/alshajaraapp/hooks.py").read_text()
+        script = Path("apps/alshajaraapp/alshajaraapp/public/js/create_menu_filter.js").read_text()
+
+        self.assertIn('"Sales Order": "public/js/create_menu_filter.js"', hooks)
+        self.assertIn('"public/js/sales_invoice.js"', hooks)
+        self.assertIn('"public/js/create_menu_filter.js"', hooks)
+        self.assertIn('"Sales Order": ["Sales Invoice"]', script)
+        self.assertIn('"Sales Invoice": ["Delivery Note", "Payment"]', script)
+        self.assertIn('frm.remove_custom_button(label, create_group)', script)
+        self.assertIn('frappe.after_ajax(() => requestAnimationFrame(run_filter))', script)
+        self.assertIn('frm.doc.docstatus !== 1', script)
+        self.assertNotIn("erpnext.selling.doctype.sales_order.sales_order.make_delivery_note", script)
+        self.assertNotIn("erpnext.stock.doctype.delivery_note.delivery_note.make_sales_invoice", script)
+        self.assertNotIn('"Delivery Note": ["Sales Invoice"]', script)
+
+    def test_quotation_purchase_order_audit_is_displayed_from_client_not_saved_from_client(self):
+        script = Path("apps/alshajaraapp/alshajaraapp/public/js/quotation.js").read_text()
+
+        self.assertIn("alshajaraapp.quotation.quotation.create_purchase_orders_from_quotation", script)
+        self.assertIn("frappe.session.user_fullname || frappe.session.user", script)
+        self.assertIn('frappe.db.set_value(\n\t\t"Quotation",\n\t\tfrm.doc.name,\n\t\t"po_created_by",\n\t\tuser_fullname\n\t)', script)
+        self.assertIn('frm.set_value("po_created_by", user_fullname)', script)
+        self.assertIn('frm.refresh_field("po_created_by")', script)
+        self.assertIn('method: "alshajaraapp.quotation.quotation.create_purchase_orders_from_quotation"', script)
+        self.assertIn('freeze_message: __("Creating Purchase Order...")', script)
+        self.assertNotIn("frm.save", script)
+        self.assertNotIn("STOP HERE FOR TESTING", script)
+        self.assertNotIn("|| frm.doc.po_created_by", script)
+
     def test_quotation_item_warehouse_grid_override_is_removed(self):
         property_setters = Path("apps/alshajaraapp/alshajaraapp/fixtures/property_setter.json").read_text()
         custom_fields = json.loads(Path("apps/alshajaraapp/alshajaraapp/fixtures/custom_field.json").read_text())

@@ -1,5 +1,6 @@
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import frappe
 
@@ -105,7 +106,88 @@ def make_item(
     )
 
 
+class AuditQuotation(frappe._dict):
+    def __init__(self):
+        super().__init__(name="QTN-AUDIT")
+        self.db_set_calls = []
+
+    def db_set(self, values, update_modified=True):
+        self.db_set_calls.append((values, update_modified))
+
+
+class MetaWithFields:
+    def has_field(self, fieldname):
+        return fieldname in {"po_created_by", "po_created_by_name", "po_created_at"}
+
+
 class TestQuotationPurchaseOrderGenerator(unittest.TestCase):
+    def test_records_authenticated_session_user_after_purchase_order_creation(self):
+        quotation = AuditQuotation()
+        generator = QuotationPurchaseOrderGenerator(quotation, notify=False)
+        generator.created_purchase_orders = ["PO-TEST"]
+
+        with (
+            patch.object(frappe, "session", frappe._dict(user="john@example.com")),
+            patch("alshajaraapp.quotation.purchase_order_generator.get_fullname", return_value="John Smith"),
+            patch.object(frappe, "get_meta", return_value=MetaWithFields()),
+            patch("alshajaraapp.quotation.purchase_order_generator.now_datetime", return_value="2026-08-13 10:15:00"),
+        ):
+            generator.record_purchase_order_creation_details()
+
+        self.assertEqual(
+            quotation.db_set_calls,
+            [
+                (
+                    {
+                        "po_created_by": "John Smith",
+                        "po_created_by_name": "John Smith",
+                        "po_created_at": "2026-08-13 10:15:00",
+                    },
+                    False,
+                )
+            ],
+        )
+
+    def test_records_user_id_when_full_name_is_unavailable(self):
+        quotation = AuditQuotation()
+        generator = QuotationPurchaseOrderGenerator(quotation, notify=False)
+        generator.created_purchase_orders = ["PO-TEST"]
+
+        with (
+            patch.object(frappe, "session", frappe._dict(user="john@example.com")),
+            patch("alshajaraapp.quotation.purchase_order_generator.get_fullname", return_value=""),
+            patch.object(frappe, "get_meta", return_value=MetaWithFields()),
+            patch("alshajaraapp.quotation.purchase_order_generator.now_datetime", return_value="2026-08-13 10:15:00"),
+        ):
+            generator.record_purchase_order_creation_details()
+
+        self.assertEqual(quotation.db_set_calls[0][0]["po_created_by"], "john@example.com")
+
+    def test_does_not_record_user_when_no_purchase_order_was_created(self):
+        quotation = AuditQuotation()
+        generator = QuotationPurchaseOrderGenerator(quotation, notify=False)
+
+        with (
+            patch.object(frappe, "session", frappe._dict(user="john@example.com")),
+            patch.object(frappe, "get_meta", return_value=MetaWithFields()),
+        ):
+            generator.record_purchase_order_creation_details()
+
+        self.assertEqual(quotation.db_set_calls, [])
+
+    def test_does_not_record_guest_user(self):
+        quotation = AuditQuotation()
+        generator = QuotationPurchaseOrderGenerator(quotation, notify=False)
+        generator.created_purchase_orders = ["PO-TEST"]
+
+        with (
+            patch.object(frappe, "session", frappe._dict(user="Guest")),
+            patch.object(frappe, "get_meta", return_value=MetaWithFields()),
+        ):
+            generator.record_purchase_order_creation_details()
+
+        self.assertEqual(quotation.db_set_calls, [])
+
     def test_draft_quotation_can_create_purchase_order_by_manual_action(self):
         quotation = make_quotation(
             make_item("QTI-1", "ITEM-1", 10, stock_status="Unavailable Stock")
